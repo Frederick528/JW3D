@@ -12,6 +12,8 @@ public class PlayerCtr : MonoBehaviour
     Animator anim;
     Rigidbody charRigid;
 
+    public Camera cam;
+
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -54,9 +56,11 @@ public class PlayerCtr : MonoBehaviour
 
         charRigid.MovePosition(transform.position + _velocity * Time.deltaTime);
 
-        transform.Rotate(0, mXAxis * mouseSpeed, 0);
+        transform.rotation = Quaternion.Euler(0, cam.transform.localEulerAngles.y, 0);
 
-        
+        Attck();
+
+
     }
     private void OnCollisionEnter(Collision collision)
     {
@@ -74,5 +78,17 @@ public class PlayerCtr : MonoBehaviour
     {
         yield return new WaitForSeconds(0.1f);
         isGround = true;
+    }
+
+    void Attck()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            anim.SetBool("Bow", true);
+        }
+        if (Input.GetMouseButtonUp(1))
+        {
+            anim.SetBool("Bow", false);
+        }
     }
 }
