@@ -7,8 +7,10 @@ public class PlayerCtr : MonoBehaviour
     public float moveSpeed = 10f;
     public float jumpPower = 6f;
     float addSpeed = 1f;
-    float mouseSpeed = 2f;
+    bool readyToAttack;
     bool isGround;
+    bool ableToRun = true;
+    bool ableToAttack = true;
     Animator anim;
     Rigidbody charRigid;
 
@@ -24,8 +26,6 @@ public class PlayerCtr : MonoBehaviour
     {
         float hAxis = Input.GetAxis("Horizontal");
         float vAxis = Input.GetAxis("Vertical");
-        float mXAxis = Input.GetAxis("Mouse X");
-        float mYAxis = Input.GetAxis("Mouse Y");
 
         Vector3 _moveHoizontal = transform.right * hAxis;
         Vector3 _moveVertial = transform.forward * vAxis;
@@ -36,27 +36,24 @@ public class PlayerCtr : MonoBehaviour
         anim.SetFloat("Vertical", vAxis);
         anim.SetFloat("Speed", _velocity.magnitude);
 
-
-        if (vAxis == 1 && Input.GetKey(KeyCode.LeftShift))
+        if (ableToRun == true && vAxis == 1 && Input.GetKey(KeyCode.LeftShift))
         {
+            readyToAttack = false;
             addSpeed = 4f;
         }
         else
-        {
             addSpeed = 1f;
-        }
 
-        if (isGround && Input.GetButtonDown("Jump"))
-        {
-            anim.SetBool("Jump", true);
-            anim.SetBool("Grounded", false);
-            charRigid.AddForce(transform.up * jumpPower, ForceMode.Impulse);
-            isGround = false;
-        }
+        Jump();
 
         charRigid.MovePosition(transform.position + _velocity * Time.deltaTime);
 
-        transform.rotation = Quaternion.Euler(0, cam.transform.localEulerAngles.y, 0);
+        if (!readyToAttack || !isGround)
+            transform.rotation = Quaternion.Euler(0, cam.transform.localEulerAngles.y, 0);
+        else if (readyToAttack)
+        {
+            transform.rotation = Quaternion.Euler(0, cam.transform.localEulerAngles.y + 90, 0);
+        }
 
         Attck();
 
@@ -78,6 +75,10 @@ public class PlayerCtr : MonoBehaviour
     {
         yield return new WaitForSeconds(0.1f);
         isGround = true;
+        if (Input.GetMouseButton(1))
+        {
+            readyToAttack = true;
+        }
     }
 
     void Attck()
@@ -85,10 +86,38 @@ public class PlayerCtr : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
         {
             anim.SetBool("Bow", true);
+            ableToRun = false;
+            readyToAttack = true;
         }
         if (Input.GetMouseButtonUp(1))
         {
             anim.SetBool("Bow", false);
+            ableToRun = true;
+            readyToAttack = false;
         }
+        if (ableToAttack == true && Input.GetMouseButtonDown(0))
+        {
+            anim.SetTrigger("BowAttack");
+            ableToAttack = false;
+            StartCoroutine(AbleToBowAttack());
+        }
+    }
+
+    void Jump()
+    {
+        if (isGround && Input.GetButtonDown("Jump"))
+        {
+            readyToAttack = false;
+            anim.SetBool("Jump", true);
+            anim.SetBool("Grounded", false);
+            charRigid.AddForce(transform.up * jumpPower, ForceMode.Impulse);
+            isGround = false;
+        }
+    }
+    IEnumerator AbleToBowAttack()
+    {
+        yield return new WaitForSeconds(1.2f);
+        ableToAttack = true;
+
     }
 }
