@@ -6,14 +6,15 @@ TagManager:
   tags:
   - CinemachineTarget
   - Ground
+  - Arrow
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
-  - 
+  - Arrow
   - 
   - 
   - 
