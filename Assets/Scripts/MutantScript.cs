@@ -20,12 +20,18 @@ public class MutantScript : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Arrow"))
+    //    {
+    //        mutantHp -= 1f;
+    //    }
+    //}
+
+    private void OnTriggerEnter(Collider other)
     {
-        print(mutantHp);
-        if (collision.transform.CompareTag("Arrow"))
+        if (other.gameObject.CompareTag("Arrow"))
         {
-            print(mutantHp);
             mutantHp -= 1f;
         }
     }

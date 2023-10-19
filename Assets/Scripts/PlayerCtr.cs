@@ -11,12 +11,14 @@ public class PlayerCtr : MonoBehaviour
     public float moveSpeed = 10f;
     public float jumpPower = 6f;
     float addSpeed = 1f;
-    bool readyToAttack;
+    public bool readyToAttack = false;
     bool isGround;
     bool ableToRun = true;
-    bool ableToAttack = true;
+    bool ableToAttack = false;
     Animator anim;
     Rigidbody charRigid;
+
+    private Coroutine attackCor;
 
     public Camera cam;
 
@@ -24,6 +26,8 @@ public class PlayerCtr : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         charRigid = GetComponent<Rigidbody>();
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     void Update()
@@ -35,7 +39,6 @@ public class PlayerCtr : MonoBehaviour
         Vector3 _moveVertial = transform.forward * vAxis;
 
         Vector3 _velocity = (_moveHoizontal + _moveVertial).normalized * moveSpeed * addSpeed;
-
         anim.SetFloat("Horizontal", hAxis);
         anim.SetFloat("Vertical", vAxis);
         anim.SetFloat("Speed", _velocity.magnitude);
@@ -45,6 +48,8 @@ public class PlayerCtr : MonoBehaviour
             readyToAttack = false;
             addSpeed = 4f;
         }
+        else if (readyToAttack)
+            addSpeed = 0.75f;
         else
             addSpeed = 1f;
 
@@ -52,17 +57,10 @@ public class PlayerCtr : MonoBehaviour
 
         charRigid.MovePosition(transform.position + _velocity * Time.deltaTime);
 
-        if (!readyToAttack || !isGround)
-            transform.rotation = Quaternion.Euler(0, cam.transform.localEulerAngles.y, 0);
-        else if (readyToAttack)
-        {
-            transform.rotation = Quaternion.Euler(0, cam.transform.localEulerAngles.y, 0);
-            addSpeed = 0.75f;
-        }
-        else
-            addSpeed = 1f;
+        transform.rotation = Quaternion.Euler(0, cam.transform.localEulerAngles.y, 0);
 
-        Attck();
+        Attack();
+
 
 
     }
@@ -84,36 +82,39 @@ public class PlayerCtr : MonoBehaviour
         isGround = true;
         if (Input.GetMouseButton(1))
         {
-            readyToAttack = true;
+            attackCor = StartCoroutine(AbleToBowAttack(0.4f, 0.7f));
         }
     }
 
-    void Attck()
+    void Attack()
     {
         if (Input.GetMouseButtonDown(1))
         {
+            //ableToAttack = true;
             anim.SetBool("Bow", true);
             ableToRun = false;
-            activateArrow.SetActive(true);
-            readyToAttack = true;
+            attackCor = StartCoroutine(AbleToBowAttack(0.4f, 0.7f));
+            //readyToAttack = true;
         }
         if (Input.GetMouseButtonUp(1))
         {
             anim.SetBool("Bow", false);
             activateArrow.SetActive(false);
             ableToRun = true;
+            StopCoroutine(attackCor);
             readyToAttack = false;
         }
-        if (ableToAttack == true && Input.GetMouseButtonDown(0))
+        if (/*ableToAttack*/readyToAttack == true && Input.GetMouseButtonDown(0))
         {
             anim.SetTrigger("BowAttack");
             activateArrow.SetActive(false);
             GameObject arrow = Instantiate(prefabArrow);
             arrow.transform.position = firePosition.transform.position;
             arrow.transform.rotation = firePosition.transform.rotation;
-            ableToAttack = false;
+            //ableToAttack = false;
+            readyToAttack = false;
 
-            StartCoroutine(AbleToBowAttack());
+            attackCor = StartCoroutine(AbleToBowAttack(0.8f, 0.7f));
         }
     }
 
@@ -122,18 +123,20 @@ public class PlayerCtr : MonoBehaviour
         if (isGround && Input.GetButtonDown("Jump"))
         {
             readyToAttack = false;
+            activateArrow.SetActive(false);
             anim.SetBool("Jump", true);
             anim.SetBool("Grounded", false);
             charRigid.AddForce(transform.up * jumpPower, ForceMode.Impulse);
             isGround = false;
         }
     }
-    IEnumerator AbleToBowAttack()
+    IEnumerator AbleToBowAttack(float activate, float attack)
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(activate);
         activateArrow.SetActive(true);
-        yield return new WaitForSeconds(0.7f);
-        ableToAttack = true;
+        yield return new WaitForSeconds(attack);
+        //ableToAttack = true;
+        readyToAttack = true;
 
     }
 }
