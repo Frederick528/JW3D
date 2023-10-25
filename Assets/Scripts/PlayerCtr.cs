@@ -5,8 +5,7 @@ using UnityEngine;
 public class PlayerCtr : MonoBehaviour
 {
     public GameObject activateArrow;
-    public GameObject prefabArrow;
-    public GameObject firePosition;
+    public Transform[] firePos;
 
     public float moveSpeed = 10f;
     public float jumpPower = 6f;
@@ -108,9 +107,7 @@ public class PlayerCtr : MonoBehaviour
         {
             anim.SetTrigger("BowAttack");
             activateArrow.SetActive(false);
-            GameObject arrow = Instantiate(prefabArrow);
-            arrow.transform.position = firePosition.transform.position;
-            arrow.transform.rotation = firePosition.transform.rotation;
+            PoolManager.instance.Pool.Get();
             //ableToAttack = false;
             readyToAttack = false;
 
