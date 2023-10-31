@@ -29,7 +29,7 @@ public class MutantScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = enemy.position + new Vector3(0, 0, 0);
+        transform.position = enemy.position + new Vector3(0.0001f, 0, 0);
         hpbar.value = mutantHp / mutantMaxHp;
         if (mutantHp <= 0)
         {

@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance; // 싱글톤을 할당할 전역 변수
     public PlayerCtr playerCtr;
+    public MutantScript mutantScript;
 
     public bool isGameover = false; // 게임 오버 상태
     public Text scoreText; // 점수를 출력할 UI 텍스트
