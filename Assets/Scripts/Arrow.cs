@@ -9,6 +9,7 @@ public class Arrow : MonoBehaviour
     public float damage;
     float speed = 20f;
     Rigidbody rigid;
+    //BoxCollider col;
 
     // StarQuaternion arrowRott is called before the first frame update
     private void OnEnable()
@@ -21,6 +22,7 @@ public class Arrow : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        //col.enabled = false;
         StartCoroutine(ArrowRelease());
     }
 

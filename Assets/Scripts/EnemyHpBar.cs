@@ -9,13 +9,11 @@ public class EnemyHpBar : MonoBehaviour
     public Slider hpBar;
     public GameObject player;
 
-    Camera camera;
+    Camera cam;
     // Start is called before the first frame update
     void Start()
     {
-        //hpBar.maxValue = GameManager.instance.mutantScript.mutantMaxHp;
-        camera = Camera.main;
-        //enemyHpBar[i] = Instantiate(hpBar[i]);
+        cam = Camera.main;
 
     }
 
@@ -27,8 +25,7 @@ public class EnemyHpBar : MonoBehaviour
         else
         {
             hpBar.enabled = true;
-            hpBar.transform.position = camera.WorldToScreenPoint(obj.position + new Vector3(0, 3f, 0));
-            //hpBar.value = GameManager.instance.mutantScript.mutantHp;
+            hpBar.transform.position = cam.WorldToScreenPoint(obj.position + new Vector3(0, 3f, 0));
         }
     }
 }

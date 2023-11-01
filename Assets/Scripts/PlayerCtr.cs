@@ -1,19 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerCtr : MonoBehaviour
 {
     public GameObject activateArrow;
     public Transform[] firePos;
 
+    public Slider playerHp;
+
     public float moveSpeed = 10f;
     public float jumpPower = 6f;
     float addSpeed = 1f;
-    public bool readyToAttack = false;
+    bool readyToAttack = false;
     bool isGround;
     bool ableToRun = true;
-    bool ableToAttack = false;
+    //bool ableToAttack = false;
     Animator anim;
     Rigidbody charRigid;
 
@@ -21,8 +24,12 @@ public class PlayerCtr : MonoBehaviour
 
     public Camera cam;
 
+    public float maxHp = 10;
+    float corHp;
+
     void Start()
     {
+        corHp = maxHp;
         anim = GetComponent<Animator>();
         charRigid = GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
@@ -60,7 +67,7 @@ public class PlayerCtr : MonoBehaviour
 
         Attack();
 
-
+        playerHp.value = corHp / maxHp;
 
     }
     private void OnCollisionEnter(Collision collision)
@@ -73,6 +80,20 @@ public class PlayerCtr : MonoBehaviour
             anim.SetBool("Jump", false);
         }
 
+        //if (collision.transform.CompareTag("EnemyAttack"))
+        //{
+        //    print("Sdsdds");
+        //    corHp -= 1;
+        //}
+
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.transform.CompareTag("Enemy"))
+        {
+            corHp -= 1;
+        }
     }
 
     IEnumerator JumpDelay()
