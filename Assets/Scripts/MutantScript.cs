@@ -24,7 +24,9 @@ public class MutantScript : MonoBehaviour
     {
         Idle,
         Walk,
-        Attack
+        Attack,
+        ComboAttack,
+        JumpAttack
     }
     //상태 처리
     State state;
@@ -57,9 +59,9 @@ public class MutantScript : MonoBehaviour
     void Update()
     {
         agent.destination = player.transform.position;
-        distance = Vector3.Distance(transform.position, player.transform.position);
+        if (player != null)
+            distance = Vector3.Distance(transform.position, player.transform.position);
         HpBar();
-
         if (mutantHp <= 0)
         {
             Destroy(gameObject);
@@ -76,6 +78,14 @@ public class MutantScript : MonoBehaviour
         else if (state == State.Attack)
         {
             UpdateAttack();
+        }
+        else if (state == State.ComboAttack)
+        {
+            UpdateComboAttack();
+        }
+        else if (state == State.JumpAttack)
+        {
+            UpdateJumpAttack();
         }
     }
 
@@ -96,55 +106,74 @@ public class MutantScript : MonoBehaviour
         else
         {
             hpBarObj.SetActive(true);
-            hpBarObj.transform.position = enemy.transform.position + Vector3.up * 2.8f;
+            hpBarObj.transform.position = enemy.transform.position + Vector3.up * 2.7f;
             hpBarObj.transform.LookAt(player);
             //hpBarObj.transform.position = cam.WorldToScreenPoint(enemy.position + new Vector3(0, 3f, 0));
         }
         hpBarSlider.value = mutantHp / mutantMaxHp;
     }
 
-
     private void UpdateAttack()
     {
-        agent.speed = 0;
-        if (distance > 2 && distance <= 10)
-        {
-            state = State.Walk;
-            anim.SetTrigger("Walk");
-        }
-        else if (distance > 10)
-        {
-            state = State.Idle;
-            anim.SetTrigger("Idle");
-        }
+        anim.ResetTrigger("Attack");    // 공격 스킬은 중간에 끊을 수 없기 때문에 한번 리셋시켜줘야 함.
+        CorState();
+    }
+
+    private void UpdateComboAttack()
+    {
+        anim.ResetTrigger("ComboAttack");    // 공격 스킬은 중간에 끊을 수 없기 때문에 한번 리셋시켜줘야 함.
+        CorState();
+    }
+
+    private void UpdateJumpAttack()
+    {
+        anim.ResetTrigger("JumpAttack");    // 공격 스킬은 중간에 끊을 수 없기 때문에 한번 리셋시켜줘야 함.
+        CorState();
     }
 
     private void UpdateWalk()
     {
-
-        if (distance <= 2)
-        {
-            state = State.Attack;
-            anim.SetTrigger("Attack");
-        }
-        else if (distance > 10)
-        {
-            state = State.Idle;
-            anim.SetTrigger("Idle");
-        }
-
         agent.speed = 1f;
         //agent.destination = player.transform.position;
-
+        CorState();
     }
 
     private void UpdateIdle()
     {
         agent.speed = 0;
-        if (player != null && distance <= 10)
+        CorState();
+    }
+    void CorState()
+    {
+        if (distance <= 2.7f)
+        {
+            int attackState;
+            attackState = Random.Range(0, 2);
+            if (attackState == 0)
+            {
+                state = State.Attack;
+                anim.SetTrigger("Attack");
+            }
+            if (attackState == 1)
+            {
+                state = State.ComboAttack;
+                anim.SetTrigger("ComboAttack");
+            }
+        }
+        else if (distance > 2.7f && distance <= 8)
         {
             state = State.Walk;
             anim.SetTrigger("Walk");
+        }
+        else if (distance > 8 && distance <= 10)
+        {
+            state = State.JumpAttack;
+            anim.SetTrigger("JumpAttack");
+        }
+        else if (distance > 10)
+        {
+            state = State.Idle;
+            anim.SetTrigger("Idle");
         }
     }
 
