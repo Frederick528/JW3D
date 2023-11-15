@@ -13,6 +13,7 @@ public class MutantScript : MonoBehaviour
     public Transform enemy;
     public GameObject hpBarObj;
     public Slider hpBarSlider;
+    //public Transform mutatntDirection;
 
     Camera cam; //안 써도 될 듯
     Animator anim;
@@ -30,6 +31,9 @@ public class MutantScript : MonoBehaviour
     }
     //상태 처리
     State state;
+
+    bool nowAttack = false;
+    Coroutine attackCor = null;
 
     private void Start()
     {
@@ -58,7 +62,6 @@ public class MutantScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        agent.destination = player.transform.position;
         if (player != null)
             distance = Vector3.Distance(transform.position, player.transform.position);
         HpBar();
@@ -66,27 +69,37 @@ public class MutantScript : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        agent.destination = player.transform.position;
 
-        if (state == State.Idle)
+        if (attackCor == null)
         {
-            UpdateIdle();
+            MoveState();
         }
-        else if (state == State.Walk)
+        if (nowAttack == true)
         {
-            UpdateWalk();
+            AttackState();
         }
-        else if (state == State.Attack)
-        {
-            UpdateAttack();
-        }
-        else if (state == State.ComboAttack)
-        {
-            UpdateComboAttack();
-        }
-        else if (state == State.JumpAttack)
-        {
-            UpdateJumpAttack();
-        }
+
+        //if (state == State.Idle)
+        //{
+        //    UpdateIdle();
+        //}
+        //else if (state == State.Walk)
+        //{
+        //    UpdateWalk();
+        //}
+        //else if (state == State.Attack)
+        //{
+        //    UpdateAttack();
+        //}
+        //else if (state == State.ComboAttack)
+        //{
+        //    UpdateComboAttack();
+        //}
+        //else if (state == State.JumpAttack)
+        //{
+        //    UpdateJumpAttack();
+        //}
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -113,69 +126,114 @@ public class MutantScript : MonoBehaviour
         hpBarSlider.value = mutantHp / mutantMaxHp;
     }
 
-    private void UpdateAttack()
-    {
-        anim.ResetTrigger("Attack");    // 공격 스킬은 중간에 끊을 수 없기 때문에 한번 리셋시켜줘야 함.
-        CorState();
-    }
+    //private void UpdateAttack()
+    //{
+    //    anim.ResetTrigger("Attack");    // 공격 스킬은 중간에 끊을 수 없기 때문에 한번 리셋시켜줘야 함.
+    //    AttackState();
+    //}
 
-    private void UpdateComboAttack()
-    {
-        anim.ResetTrigger("ComboAttack");    // 공격 스킬은 중간에 끊을 수 없기 때문에 한번 리셋시켜줘야 함.
-        CorState();
-    }
+    //private void UpdateComboAttack()
+    //{
+    //    anim.ResetTrigger("ComboAttack");    // 공격 스킬은 중간에 끊을 수 없기 때문에 한번 리셋시켜줘야 함.
+    //    AttackState();
+    //}
 
-    private void UpdateJumpAttack()
-    {
-        anim.ResetTrigger("JumpAttack");    // 공격 스킬은 중간에 끊을 수 없기 때문에 한번 리셋시켜줘야 함.
-        CorState();
-    }
+    //private void UpdateJumpAttack()
+    //{
+    //    anim.ResetTrigger("JumpAttack");    // 공격 스킬은 중간에 끊을 수 없기 때문에 한번 리셋시켜줘야 함.
+    //    AttackState();
+    //}
 
-    private void UpdateWalk()
-    {
-        agent.speed = 1f;
-        //agent.destination = player.transform.position;
-        CorState();
-    }
+    //private void UpdateWalk()
+    //{
+    //    agent.speed = 1f;
+    //    //agent.destination = player.transform.position;
+    //    AttackState();
+    //}
 
-    private void UpdateIdle()
-    {
-        agent.speed = 0;
-        CorState();
-    }
-    void CorState()
+    //private void UpdateIdle()
+    //{
+    //    agent.speed = 0;
+    //    AttackState();
+    //}
+
+    void MoveState()
     {
         if (distance <= 2.7f)
         {
-            int attackState;
-            attackState = Random.Range(0, 2);
-            if (attackState == 0)
-            {
-                state = State.Attack;
-                anim.SetTrigger("Attack");
-            }
-            if (attackState == 1)
-            {
-                state = State.ComboAttack;
-                anim.SetTrigger("ComboAttack");
-            }
+            nowAttack = true;
         }
         else if (distance > 2.7f && distance <= 8)
         {
             state = State.Walk;
+            agent.speed = 1f;
             anim.SetTrigger("Walk");
+        }
+        else if (distance > 8 && distance <= 10)
+        {
+            nowAttack = true;
+        }
+        else if (distance > 10)
+        {
+            state = State.Idle;
+            agent.speed = 0;
+            anim.SetTrigger("Idle");
+        }
+    }
+    void AttackState()
+    {
+        nowAttack = false;
+        if (distance <= 2.7f)
+        {
+            int attackState;
+            attackState = Random.Range(0, 2);
+            switch (attackState)
+            {
+                case 0:
+                    state = State.Attack;
+                    anim.SetTrigger("Attack");
+                    attackCor = StartCoroutine(Attack());
+                    break;
+                case 1:
+                    state = State.ComboAttack;
+                    anim.SetTrigger("ComboAttack");
+                    attackCor = StartCoroutine(ComboAttack());
+                    break;
+            }
         }
         else if (distance > 8 && distance <= 10)
         {
             state = State.JumpAttack;
             anim.SetTrigger("JumpAttack");
-        }
-        else if (distance > 10)
-        {
-            state = State.Idle;
-            anim.SetTrigger("Idle");
+            attackCor = StartCoroutine(JumpAttack());
         }
     }
+
+    IEnumerator Attack()
+    {
+        agent.speed = 0;
+        yield return new WaitForSeconds(2.5f);
+        attackCor = null;
+    }
+
+    IEnumerator ComboAttack()
+    {
+        agent.speed = 1f;
+        yield return new WaitForSeconds(4f);
+        attackCor = null;
+    }
+
+    IEnumerator JumpAttack()
+    {
+        agent.speed = 0;
+        yield return new WaitForSeconds(0.5f);
+        agent.speed = 5;
+        yield return new WaitForSeconds(2f);
+        agent.speed = 0;
+        yield return new WaitForSeconds(0.5f);
+        attackCor = null;
+    }
+
 
     //private void OnTrigg erEnter(Collider other)
     //{

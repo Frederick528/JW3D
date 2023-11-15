@@ -6,17 +6,22 @@ using UnityEngine.UI;
 public class PlayerCtr : MonoBehaviour
 {
     public GameObject activateArrow;
-    public Transform[] firePos;
+    public GameObject[] firePos;
 
     public Slider playerHp;
 
-    public float moveSpeed = 10f;
+    public float moveSpeed = 2f;
     public float jumpPower = 6f;
     float addSpeed = 1f;
     bool readyToAttack = false;
     bool isGround;
     bool ableToRun = true;
+    bool ableToDive = true;
     //bool ableToAttack = false;
+    
+    public bool skill1 = false;
+    public int arrowIndex = 0;
+    
     Animator anim;
     Rigidbody charRigid;
 
@@ -27,6 +32,11 @@ public class PlayerCtr : MonoBehaviour
     public float maxHp = 10;
     float corHp;
 
+    float hAxis;
+    float vAxis;
+
+    Vector3 _velocity;
+
     void Start()
     {
         corHp = maxHp;
@@ -36,19 +46,22 @@ public class PlayerCtr : MonoBehaviour
         Cursor.visible = false;
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        float hAxis = Input.GetAxis("Horizontal");
-        float vAxis = Input.GetAxis("Vertical");
+        hAxis = Input.GetAxis("Horizontal");
+        vAxis = Input.GetAxis("Vertical");
 
         Vector3 _moveHoizontal = transform.right * hAxis;
         Vector3 _moveVertial = transform.forward * vAxis;
 
-        Vector3 _velocity = (_moveHoizontal + _moveVertial).normalized * moveSpeed * addSpeed;
-        anim.SetFloat("Horizontal", hAxis);
-        anim.SetFloat("Vertical", vAxis);
-        anim.SetFloat("Speed", _velocity.magnitude);
+        _velocity = (_moveHoizontal + _moveVertial).normalized * moveSpeed * addSpeed;
 
+        charRigid.MovePosition(transform.position + _velocity * Time.deltaTime);
+
+    }
+
+    private void Update()
+    {
         if (ableToRun == true && vAxis == 1 && Input.GetKey(KeyCode.LeftShift))
         {
             readyToAttack = false;
@@ -59,16 +72,32 @@ public class PlayerCtr : MonoBehaviour
         else
             addSpeed = 1f;
 
-        Jump();
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            skill1 = true;
+            for (int arrowFirePos = 1; arrowFirePos < firePos.Length; arrowFirePos++)
+            {
+                firePos[arrowFirePos].SetActive(true);
+            }
+        }
 
-        charRigid.MovePosition(transform.position + _velocity * Time.deltaTime);
+        if (Input.GetKeyDown(KeyCode.LeftControl) && _velocity.magnitude != 0 && ableToDive == true && isGround == true)
+        {
+            ableToDive = false;
+            anim.SetTrigger("Dive");
+            StartCoroutine(AvoidDive());
+        }
+        anim.SetFloat("Horizontal", hAxis);
+        anim.SetFloat("Vertical", vAxis);
+        anim.SetFloat("Speed", _velocity.magnitude * 5);
 
         transform.rotation = Quaternion.Euler(0, cam.transform.localEulerAngles.y, 0);
+
+        Jump();
 
         Attack();
 
         playerHp.value = corHp / maxHp;
-
     }
     private void OnCollisionEnter(Collision collision)
     {
@@ -128,7 +157,19 @@ public class PlayerCtr : MonoBehaviour
         {
             anim.SetTrigger("BowAttack");
             activateArrow.SetActive(false);
-            PoolManager.instance.Pool.Get();
+            if (skill1 == true)
+            {
+                for (int arrowFirePos = 0; arrowFirePos < firePos.Length; arrowFirePos++)
+                {
+                    PoolManager.instance.Pool.Get();
+                    arrowIndex++;
+                }
+                arrowIndex = 0;
+            }
+            else
+            {
+                PoolManager.instance.Pool.Get();
+            }
             //ableToAttack = false;
             readyToAttack = false;
 
@@ -156,5 +197,11 @@ public class PlayerCtr : MonoBehaviour
         //ableToAttack = true;
         readyToAttack = true;
 
+    }
+
+    IEnumerator AvoidDive()
+    {
+        yield return new WaitForSeconds(1f);
+        ableToDive = true;
     }
 }
