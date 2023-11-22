@@ -9,9 +9,10 @@ public class PlayerCtr : MonoBehaviour
     public GameObject[] firePos;
 
     public Slider playerHp;
+    public Slider playerStamina;
 
     public float moveSpeed = 2f;
-    public float jumpPower = 6f;
+    public float jumpPower = 4f;
     float addSpeed = 1f;
     bool readyToAttack = false;
     bool isGround;
@@ -31,6 +32,9 @@ public class PlayerCtr : MonoBehaviour
 
     public float maxHp = 10;
     float corHp;
+
+    bool lockStamina = false;
+    bool exhausted = false;
 
     float hAxis;
     float vAxis;
@@ -62,10 +66,21 @@ public class PlayerCtr : MonoBehaviour
 
     private void Update()
     {
-        if (ableToRun == true && vAxis == 1 && Input.GetKey(KeyCode.LeftShift))
+        if (!lockStamina)
         {
+            playerStamina.value += 0.003f;
+        }
+        if (playerStamina.value <= 0.01f)
+            exhausted = true;
+        else if (exhausted && playerStamina.value > 0.1f)
+            exhausted = false;
+        if (!exhausted && playerStamina.value > 0.01f && ableToRun == true && vAxis == 1 && Input.GetKey(KeyCode.LeftShift))
+        {
+            StopCoroutine("StaminaLock");
             readyToAttack = false;
             addSpeed = 4f;
+            playerStamina.value -= 0.001f;
+            StartCoroutine("StaminaLock");
         }
         else if (readyToAttack)
             addSpeed = 0.75f;
@@ -81,11 +96,14 @@ public class PlayerCtr : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftControl) && _velocity.magnitude != 0 && ableToDive == true && isGround == true)
+        if (!exhausted && playerStamina.value > 0.1f && Input.GetKeyDown(KeyCode.LeftControl) && _velocity.magnitude != 0 && ableToDive == true && isGround == true)
         {
+            StopCoroutine("StaminaLock");
             ableToDive = false;
             anim.SetTrigger("Dive");
             StartCoroutine(AvoidDive());
+            playerStamina.value -= 0.1f;
+            StartCoroutine("StaminaLock");
         }
         anim.SetFloat("Horizontal", hAxis);
         anim.SetFloat("Vertical", vAxis);
@@ -161,10 +179,9 @@ public class PlayerCtr : MonoBehaviour
             {
                 for (int arrowFirePos = 0; arrowFirePos < firePos.Length; arrowFirePos++)
                 {
+                    arrowIndex = arrowFirePos;
                     PoolManager.instance.Pool.Get();
-                    arrowIndex++;
                 }
-                arrowIndex = 0;
             }
             else
             {
@@ -201,7 +218,16 @@ public class PlayerCtr : MonoBehaviour
 
     IEnumerator AvoidDive()
     {
+        gameObject.layer = 8;
         yield return new WaitForSeconds(1f);
+        gameObject.layer = 3;
         ableToDive = true;
+    }
+
+    IEnumerator StaminaLock()
+    {
+        lockStamina = true;
+        yield return new WaitForSeconds(2f);
+        lockStamina = false;
     }
 }

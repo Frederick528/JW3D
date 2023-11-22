@@ -62,6 +62,7 @@ public class MutantScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        agent.destination = player.transform.position;
         if (player != null)
             distance = Vector3.Distance(transform.position, player.transform.position);
         HpBar();
@@ -69,7 +70,6 @@ public class MutantScript : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        agent.destination = player.transform.position;
 
         if (attackCor == null)
         {
@@ -227,7 +227,7 @@ public class MutantScript : MonoBehaviour
     {
         agent.speed = 0;
         yield return new WaitForSeconds(0.5f);
-        agent.speed = 5;
+        agent.speed = 7;
         yield return new WaitForSeconds(2f);
         agent.speed = 0;
         yield return new WaitForSeconds(0.5f);
