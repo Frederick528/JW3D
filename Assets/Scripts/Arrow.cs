@@ -32,7 +32,6 @@ public class Arrow : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        //col.enabled = false;
         StartCoroutine(ArrowRelease());
     }
 
