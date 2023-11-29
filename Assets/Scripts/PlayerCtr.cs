@@ -16,7 +16,6 @@ public class PlayerCtr : MonoBehaviour
     float addSpeed = 1f;
     bool readyToAttack = false;
     bool isGround;
-    bool ableToRun = true;
     bool ableToDive = true;
     //bool ableToAttack = false;
     
@@ -74,9 +73,10 @@ public class PlayerCtr : MonoBehaviour
             exhausted = true;
         else if (exhausted && playerStamina.value > 0.1f)
             exhausted = false;
-        if (!exhausted && playerStamina.value > 0.01f && ableToRun == true && vAxis == 1 && Input.GetKey(KeyCode.LeftShift))
+        if (!exhausted && playerStamina.value > 0.01f && vAxis == 1 && Input.GetKey(KeyCode.LeftShift))
         {
             StopCoroutine("StaminaLock");
+            anim.SetBool("Bow", false);
             readyToAttack = false;
             addSpeed = 4f;
             playerStamina.value -= 0.001f;
@@ -96,10 +96,22 @@ public class PlayerCtr : MonoBehaviour
             }
         }
 
+        if (anim.GetBool("Bow"))
+        {
+            anim.SetLayerWeight(1, 1);
+        }
+        else
+        {
+            activateArrow.SetActive(false);
+            readyToAttack = false;
+            anim.SetLayerWeight(1, 0);
+        }
+
         if (!exhausted && playerStamina.value > 0.1f && Input.GetKeyDown(KeyCode.LeftControl) && _velocity.magnitude != 0 && ableToDive == true && isGround == true)
         {
             StopCoroutine("StaminaLock");
             ableToDive = false;
+            anim.SetBool("Bow", false);
             anim.SetTrigger("Dive");
             StartCoroutine(AvoidDive());
             playerStamina.value -= 0.1f;
@@ -116,6 +128,7 @@ public class PlayerCtr : MonoBehaviour
         Attack();
 
         playerHp.value = corHp / maxHp;
+
     }
     private void OnCollisionEnter(Collision collision)
     {
@@ -147,10 +160,6 @@ public class PlayerCtr : MonoBehaviour
     {
         yield return new WaitForSeconds(0.1f);
         isGround = true;
-        if (Input.GetMouseButton(1))
-        {
-            attackCor = StartCoroutine(AbleToBowAttack(0.4f, 0.7f));
-        }
     }
 
     void Attack()
@@ -158,18 +167,15 @@ public class PlayerCtr : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
         {
             //ableToAttack = true;
+            anim.SetTrigger("CanAttack");
             anim.SetBool("Bow", true);
-            ableToRun = false;
             attackCor = StartCoroutine(AbleToBowAttack(0.4f, 0.7f));
             //readyToAttack = true;
         }
         if (Input.GetMouseButtonUp(1))
         {
             anim.SetBool("Bow", false);
-            activateArrow.SetActive(false);
-            ableToRun = true;
             StopCoroutine(attackCor);
-            readyToAttack = false;
         }
         if (/*ableToAttack*/readyToAttack == true && Input.GetMouseButtonDown(0))
         {
@@ -199,7 +205,7 @@ public class PlayerCtr : MonoBehaviour
         if (isGround && Input.GetButtonDown("Jump"))
         {
             readyToAttack = false;
-            activateArrow.SetActive(false);
+            anim.SetBool("Bow", false);
             anim.SetBool("Jump", true);
             anim.SetBool("Grounded", false);
             charRigid.AddForce(transform.up * jumpPower, ForceMode.Impulse);
