@@ -29,12 +29,12 @@ public class PoolManager : MonoBehaviour
         Pool = new ObjectPool<GameObject>(CreatePooledItem, OnTakeFromPool, OnReturnedToPool,
         OnDestroyPoolObject, true, defaultCapacity, maxPoolSize);
 
-        // 미리 오브젝트 생성 해놓기
-        for (int i = 0; i < defaultCapacity; i++)
-        {
-            Arrow arrow = CreatePooledItem().GetComponent<Arrow>();
-            arrow.Pool.Release(arrow.gameObject);
-        }
+        //// 미리 오브젝트 생성 해놓기
+        //for (int i = 0; i < defaultCapacity; i++)
+        //{
+        //    Arrow arrow = CreatePooledItem().GetComponent<Arrow>();
+        //    arrow.Pool.Release(arrow.gameObject);
+        //}
     }
 
     // 생성

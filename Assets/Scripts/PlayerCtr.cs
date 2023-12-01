@@ -1,6 +1,8 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using UnityEngine.UI;
 
 public class PlayerCtr : MonoBehaviour
@@ -11,19 +13,28 @@ public class PlayerCtr : MonoBehaviour
     public Slider playerHp;
     public Slider playerStamina;
 
-    public float moveSpeed = 2f;
-    public float jumpPower = 4f;
+    float moveSpeed = 2f;
+    float jumpPower = 4f;
     float addSpeed = 1f;
     bool readyToAttack = false;
     bool isGround;
     bool ableToDive = true;
     //bool ableToAttack = false;
-    
+
+    [HideInInspector]
     public bool skill1 = false;
+    [HideInInspector]
     public int arrowIndex = 0;
+
+    public GameObject cameraLook;
     
     Animator anim;
     Rigidbody charRigid;
+
+    public MultiAimConstraint leftArmAim;
+    public MultiAimConstraint rightArmAim;
+
+    public CinemachineFollowZoom zoom;
 
     private Coroutine attackCor;
 
@@ -98,10 +109,17 @@ public class PlayerCtr : MonoBehaviour
 
         if (anim.GetBool("Bow"))
         {
+            cameraLook.transform.localPosition = new Vector3(0.6f,1.5f,0);
+            zoom.enabled = true;
+            leftArmAim.weight = 1;
             anim.SetLayerWeight(1, 1);
         }
         else
         {
+            cameraLook.transform.localPosition = new Vector3(1f, 1.5f, 0);
+            zoom.enabled= false;
+            leftArmAim.weight = 0;
+            rightArmAim.weight = 0;
             activateArrow.SetActive(false);
             readyToAttack = false;
             anim.SetLayerWeight(1, 0);
@@ -158,7 +176,7 @@ public class PlayerCtr : MonoBehaviour
 
     IEnumerator JumpDelay()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.2f);
         isGround = true;
     }
 
@@ -169,7 +187,7 @@ public class PlayerCtr : MonoBehaviour
             //ableToAttack = true;
             anim.SetTrigger("CanAttack");
             anim.SetBool("Bow", true);
-            attackCor = StartCoroutine(AbleToBowAttack(0.4f, 0.7f));
+            attackCor = StartCoroutine(AbleToBowAttack(0.15f));
             //readyToAttack = true;
         }
         if (Input.GetMouseButtonUp(1))
@@ -196,13 +214,13 @@ public class PlayerCtr : MonoBehaviour
             //ableToAttack = false;
             readyToAttack = false;
 
-            attackCor = StartCoroutine(AbleToBowAttack(0.8f, 0.7f));
+            attackCor = StartCoroutine(AbleToBowAttack(0.6f));
         }
     }
 
     void Jump()
     {
-        if (isGround && Input.GetButtonDown("Jump"))
+        if (isGround && Input.GetButtonDown("Jump") && ableToDive)
         {
             readyToAttack = false;
             anim.SetBool("Bow", false);
@@ -212,11 +230,21 @@ public class PlayerCtr : MonoBehaviour
             isGround = false;
         }
     }
-    IEnumerator AbleToBowAttack(float activate, float attack)
+
+    IEnumerator AbleToBowAttack(float activate)
     {
+        yield return new WaitForSeconds(0.2f);
+        rightArmAim.weight = 0;
+        rightArmAim.data.offset = new Vector3(0, 0, 0);
         yield return new WaitForSeconds(activate);
         activateArrow.SetActive(true);
-        yield return new WaitForSeconds(attack);
+        rightArmAim.weight = 1;
+        yield return new WaitForSeconds(0.4f);
+        for (int i = 0; i < 20; i++)
+        {
+            rightArmAim.data.offset = new Vector3(i, 0, 0);
+            yield return new WaitForSeconds(0.01f);
+        }
         //ableToAttack = true;
         readyToAttack = true;
 
@@ -225,7 +253,7 @@ public class PlayerCtr : MonoBehaviour
     IEnumerator AvoidDive()
     {
         gameObject.layer = 8;
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.25f);
         gameObject.layer = 3;
         ableToDive = true;
     }

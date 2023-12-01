@@ -20,13 +20,13 @@ public class Arrow : MonoBehaviour
         {
             transform.position = GameManager.instance.playerCtr.firePos[0].transform.position;
             transform.rotation = GameManager.instance.playerCtr.firePos[0].transform.rotation;
-            rigid.AddForce(transform.up * speed, ForceMode.Impulse);
+            rigid.AddForce(transform.forward * speed, ForceMode.Impulse);
         }
         else if (GameManager.instance.playerCtr.skill1 == true)
         {
             transform.position = GameManager.instance.playerCtr.firePos[GameManager.instance.playerCtr.arrowIndex].transform.position;
             transform.rotation = GameManager.instance.playerCtr.firePos[GameManager.instance.playerCtr.arrowIndex].transform.rotation;
-            rigid.AddForce(transform.up * speed, ForceMode.Impulse);
+            rigid.AddForce(transform.forward * speed, ForceMode.Impulse);
         }
     }
 
