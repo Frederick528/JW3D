@@ -6,8 +6,9 @@ using UnityEngine.Pool;
 public class Arrow : MonoBehaviour
 {
     public IObjectPool<GameObject> Pool { get; set; }
+    [HideInInspector]
     public float damage;
-    float speed = 20f;
+    float speed = 40f;
     Rigidbody rigid;
     //BoxCollider col;
 
@@ -28,16 +29,18 @@ public class Arrow : MonoBehaviour
             transform.rotation = GameManager.instance.playerCtr.firePos[GameManager.instance.playerCtr.arrowIndex].transform.rotation;
             rigid.AddForce(transform.forward * speed, ForceMode.Impulse);
         }
+
+        StartCoroutine(ArrowRelease(15f));
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        StartCoroutine(ArrowRelease());
+        StartCoroutine(ArrowRelease(1f));
     }
 
-    IEnumerator ArrowRelease()
+    IEnumerator ArrowRelease(float releaseTime)
     {
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(releaseTime);
         Pool.Release(this.gameObject);
     }
 }
