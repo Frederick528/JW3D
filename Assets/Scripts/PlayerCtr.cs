@@ -35,6 +35,7 @@ public class PlayerCtr : MonoBehaviour
     Rigidbody charRigid;
 
     public MultiAimConstraint leftArmAim;       // 왼쪽 팔이 바라보는 방향(animation rigging을 통해 각 부위별로 바라보는 방향이 다르도록 조정함)
+    public MultiAimConstraint leftBowAim;       // 왼쪽에 있는 활이 바라보는 방향(animation rigging을 통해 각 부위별로 바라보는 방향이 다르도록 조정함)
     public MultiAimConstraint rightArmAim;      // 오른쪽 팔이 바라보는 방향(animation rigging을 통해 각 부위별로 바라보는 방향이 다르도록 조정함)
 
     public CinemachineFollowZoom zoom;          // 카메라 zoom 기능
@@ -132,11 +133,12 @@ public class PlayerCtr : MonoBehaviour
         if (Input.GetMouseButtonUp(1) && anim.GetBool("Bow"))
         {
             StartCoroutine(ArcheryPosture(0.4f));
-            OffBow();
             StopCoroutine(attackCor);
+            OffBow();
         }
         if (readyToAttack == true && Input.GetMouseButtonDown(0))
         {
+            leftBowAim.weight = 0;
             anim.SetTrigger("BowAttack");
             activateArrow.SetActive(false);
             if (skill1 == true)
@@ -205,6 +207,7 @@ public class PlayerCtr : MonoBehaviour
         activateArrow.SetActive(false);
         readyToAttack = false;
         leftArmAim.weight = 0;
+        leftBowAim.weight = 0;
         rightArmAim.weight = 0;
         anim.SetLayerWeight(1, 0);
     }
@@ -326,12 +329,15 @@ public class PlayerCtr : MonoBehaviour
         yield return new WaitForSeconds(0.4f);
         for (int i = 0; i < 20; i++)
         {
+            if (i == 10)
+                leftBowAim.weight = 1;
             rightArmAim.data.offset = new Vector3(i, 0, 0);
             yield return new WaitForSeconds(0.01f);
         }
         readyToAttack = true;
 
     }
+
 
     /// <summary>
     /// 회피 사용 시, 플레이어의 레이어를 변경하여 플레이어가 적의 공격에 맞지 않도록 변경
