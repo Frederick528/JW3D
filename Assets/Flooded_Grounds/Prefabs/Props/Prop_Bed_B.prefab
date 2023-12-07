@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 20542468}
   m_Layer: 8
   m_Name: Prop_Bed_B
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 16
@@ -71,7 +71,7 @@ GameObject:
   - component: {fileID: 6569466}
   m_Layer: 8
   m_Name: lo_Prop_Bed_B_LOD1
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 16
@@ -168,7 +168,7 @@ GameObject:
   - component: {fileID: 6532486}
   m_Layer: 8
   m_Name: lo_Prop_Bed_B_LOD0
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 16

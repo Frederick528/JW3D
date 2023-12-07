@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6566330}
   m_Layer: 8
   m_Name: lo_Prop_SmallTable_B_LOD0
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 16
@@ -111,7 +111,7 @@ GameObject:
   - component: {fileID: 6589814}
   m_Layer: 8
   m_Name: lo_Prop_SmallTable_B_LOD1
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 16
@@ -206,7 +206,7 @@ GameObject:
   - component: {fileID: 20505666}
   m_Layer: 8
   m_Name: Prop_SmallTable_B
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 16

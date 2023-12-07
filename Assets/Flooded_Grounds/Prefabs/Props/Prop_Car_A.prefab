@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6542796}
   m_Layer: 8
   m_Name: lo_Prop_Car_A_LOD2
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 16
@@ -111,7 +111,7 @@ GameObject:
   - component: {fileID: 6524942}
   m_Layer: 8
   m_Name: lo_Prop_Car_A_LOD0
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 16
@@ -206,7 +206,7 @@ GameObject:
   - component: {fileID: 20574888}
   m_Layer: 8
   m_Name: Prop_Car_A
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 16
@@ -270,7 +270,7 @@ GameObject:
   - component: {fileID: 6506740}
   m_Layer: 8
   m_Name: lo_Prop_Car_A_LOD1
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 16

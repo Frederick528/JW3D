@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6500412}
   m_Layer: 8
   m_Name: lo_Prop_Lamp_C_LOD0
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 16
@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 20576438}
   m_Layer: 8
   m_Name: Prop_Lamp_C
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 16
@@ -168,7 +168,7 @@ GameObject:
   - component: {fileID: 6543232}
   m_Layer: 8
   m_Name: lo_Prop_Lamp_C_LOD1
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 16

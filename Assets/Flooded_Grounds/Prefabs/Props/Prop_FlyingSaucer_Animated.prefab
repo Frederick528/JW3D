@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 404048}
   m_Layer: 8
   m_Name: Prop_FlyingSaucer_Animated
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 9521874}
   m_Layer: 8
   m_Name: FlyingSaucer_Body
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

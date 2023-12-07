@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 20540928}
   m_Layer: 8
   m_Name: Prop_Ship_A
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -80,7 +80,7 @@ GameObject:
   - component: {fileID: 2323340}
   m_Layer: 8
   m_Name: Prop_Ship_A_LOD1
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -163,7 +163,7 @@ GameObject:
   - component: {fileID: 2370842}
   m_Layer: 8
   m_Name: Prop_Ship_A_LOD3
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -246,7 +246,7 @@ GameObject:
   - component: {fileID: 2386416}
   m_Layer: 8
   m_Name: Prop_Ship_A_LOD2
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -329,7 +329,7 @@ GameObject:
   - component: {fileID: 2321186}
   m_Layer: 8
   m_Name: Prop_Ship_A_LOD0
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295

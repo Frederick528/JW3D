@@ -33,6 +33,7 @@ public class PlayerCtr : MonoBehaviour
     
     Animator anim;
     Rigidbody charRigid;
+    CapsuleCollider capsuleCollider;
 
     public MultiAimConstraint leftArmAim;       // 왼쪽 팔이 바라보는 방향(animation rigging을 통해 각 부위별로 바라보는 방향이 다르도록 조정함)
     public MultiAimConstraint leftBowAim;       // 왼쪽에 있는 활이 바라보는 방향(animation rigging을 통해 각 부위별로 바라보는 방향이 다르도록 조정함)
@@ -60,6 +61,7 @@ public class PlayerCtr : MonoBehaviour
         corHp = maxHp;
         anim = GetComponent<Animator>();
         charRigid = GetComponent<Rigidbody>();
+        capsuleCollider = GetComponent<CapsuleCollider>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -171,6 +173,7 @@ public class PlayerCtr : MonoBehaviour
             anim.SetBool("Jump", true);
             anim.SetBool("Grounded", false);
             charRigid.AddForce(transform.up * jumpPower, ForceMode.Impulse);
+            StartCoroutine(JumpPositionFixing());
             isGround = false;
         }
     }
@@ -302,6 +305,21 @@ public class PlayerCtr : MonoBehaviour
     }
 
 
+
+    IEnumerator JumpPositionFixing()
+    {
+        for (int i = 0; i < 7; i++)
+        {
+            capsuleCollider.center = new Vector3(0, capsuleCollider.center.y + 0.1f, 0);
+            yield return new WaitForSeconds(0.05f);
+        }
+        yield return new WaitForSeconds(0.1f);
+        for (int i = 0; i < 7; i++)
+        {
+            capsuleCollider.center = new Vector3(0, capsuleCollider.center.y - 0.1f, 0);
+            yield return new WaitForSeconds(0.05f);
+        }
+    }
 
     /// <summary>
     /// 땅에 착지 후, 바로 점프하는 것을 막는 코루틴

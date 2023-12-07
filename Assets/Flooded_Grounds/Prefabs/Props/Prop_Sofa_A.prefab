@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6529600}
   m_Layer: 8
   m_Name: lo_Prop_Sofa_A_LOD0
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 16
@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 20540796}
   m_Layer: 8
   m_Name: Prop_Sofa_A
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 16
@@ -168,7 +168,7 @@ GameObject:
   - component: {fileID: 6526776}
   m_Layer: 8
   m_Name: lo_Prop_Sofa_A_LOD1
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 16

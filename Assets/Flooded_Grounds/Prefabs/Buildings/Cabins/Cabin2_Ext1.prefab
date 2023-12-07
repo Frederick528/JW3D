@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6412512}
   m_Layer: 0
   m_Name: Cabin2_Ext1
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
